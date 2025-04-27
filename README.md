@@ -1,21 +1,19 @@
-# Hi, I'm Tanmay Bansal 
+# Hi, I'm Tanmay Bansal 👋
 
 > Full Stack Developer | AI Enthusiast | SaaS Builder
 
----
-
-## 🚀 About Me
+<details>
+<summary>🚀 About Me</summary>
 
 - 🌟 B.Tech IT student at Delhi Technological University (DTU).
 - 💡 Passionate about building scalable SaaS products and AI-powered platforms.
-- 📢 Currently heavily contributing to Sugar Labs
-- 👋 Beginning my web3 journey with solana and rust
 - 🔄 Constantly learning and pushing the boundaries of technology.
 - 💭 I love collaborating on impactful projects and open-source contributions.
 
----
+</details>
 
-## 🔧 Tech Stack
+<details>
+<summary>🔧 Tech Stack</summary>
 
 **Languages:**
 - C++ | Python | TypeScript | SQL | HTML | CSS
@@ -32,20 +30,20 @@
 **Other Skills:**
 - Machine Learning | Deep Learning | Data Structures and Algorithms | Database Management
 
----
+</details>
 
-
-## 📢 Let's Connect
+<details>
+<summary>📢 Let's Connect</summary>
 
 - **Portfolio:** [tanmay.space](https://tanmay.space)
 - **LinkedIn:** [Tanmay Bansal](https://www.linkedin.com/in/tanmay-bansal-40bb44199/)
 - **GitHub:** [TanmayBansa1](https://github.com/TanmayBansa1)
-- **Email:** [tanmaybansal_se22a13_09@dtu.ac.in](mailto:tanmaybansal.20@gmail.com)
-- **Twitter:** [K_A_I11](https://x.com/K_A_I11)
+- **Email:** [tanmaybansal_se22a13_09@dtu.ac.in](mailto:tanmaybansal_se22a13_09@dtu.ac.in)
 
----
+</details>
 
-## 📊 GitHub Stats
+<details>
+<summary>📊 GitHub Stats</summary>
 
 <p align="center">
   <img src="https://github-readme-stats.vercel.app/api?username=TanmayBansa1&show_icons=true&theme=tokyonight" alt="Tanmay's GitHub Stats" />
@@ -55,8 +53,11 @@
   <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=TanmayBansa1&layout=compact&theme=tokyonight" alt="Top Languages" />
 </p>
 
----
+</details>
 
-## 🔍 Quote I Live By
+<details>
+<summary>🔍 Quote I Live By</summary>
 
 > "Stay hungry, stay foolish." – Steve Jobs
+
+</details>
