@@ -7,6 +7,8 @@
 
 - 🌟 B.Tech IT student at Delhi Technological University (DTU).
 - 💡 Passionate about building scalable SaaS products and AI-powered platforms.
+- 📢 Currently heavily contributing to Sugar Labs
+- 👋 Beginning my web3 journey with solana and rust
 - 🔄 Constantly learning and pushing the boundaries of technology.
 - 💭 I love collaborating on impactful projects and open-source contributions.
 
