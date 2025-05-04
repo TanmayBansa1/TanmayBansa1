@@ -40,20 +40,7 @@
 - **Portfolio:** [tanmay.space](https://tanmay.space)
 - **LinkedIn:** [Tanmay Bansal](https://www.linkedin.com/in/tanmay-bansal-40bb44199/)
 - **GitHub:** [TanmayBansa1](https://github.com/TanmayBansa1)
-- **Email:** [tanmaybansal_se22a13_09@dtu.ac.in](mailto:tanmaybansal_se22a13_09@dtu.ac.in)
-
-</details>
-
-<details>
-<summary>📊 GitHub Stats</summary>
-
-<p align="center">
-  <img src="https://github-readme-stats.vercel.app/api?username=TanmayBansa1&show_icons=true&theme=tokyonight" alt="Tanmay's GitHub Stats" />
-  <br />
-  <img src="https://github-readme-streak-stats.herokuapp.com/?user=TanmayBansa1&theme=tokyonight" alt="Tanmay's GitHub Streak" />
-  <br />
-  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=TanmayBansa1&layout=compact&theme=tokyonight" alt="Top Languages" />
-</p>
+- **Email:** [tanmaybansal.20@gmail.com](mailto:tanmaybansal.20@gmail.com)
 
 </details>
 
