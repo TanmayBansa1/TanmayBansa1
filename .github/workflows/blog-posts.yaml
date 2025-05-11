@@ -29,7 +29,7 @@ jobs:
 
           # Update README.md in place
           sed -i "/<!-- BLOG-POST-LIST:START -->/,/<!-- BLOG-POST-LIST:END -->/c\\
-<!-- BLOG-POST-LIST:START -->\n$blog_posts_escaped\n<!-- BLOG-POST-LIST:END -->" README.md
+          <!-- BLOG-POST-LIST:START -->\n$blog_posts_escaped\n<!-- BLOG-POST-LIST:END -->" README.md
 
       - name: Commit and Push Changes
         run: |
