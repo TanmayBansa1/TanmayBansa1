@@ -32,7 +32,10 @@ jobs:
           <!-- BLOG-POST-LIST:START -->\n$blog_posts_escaped\n<!-- BLOG-POST-LIST:END -->" README.md
 
       - name: Commit and Push Changes
+        env:
+          TOKEN: ${{ secrets.PERSONAL_TOKEN }}
         run: |
-          git config --global user.name "TanmayBansa1"
+          git config --global user.name "Tanmay Bansal"
           git config --global user.email "tanmaybansal_se22a13_09@dtu.ac.in"
+          git remote set-url origin https://TanmayBansa1:${TOKEN}@github.com/TanmayBansa1/TanmayBansa1.git
           git diff --quiet || (git add README.md && git commit -m "Update latest blog posts" && git push)
