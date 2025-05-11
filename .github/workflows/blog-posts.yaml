@@ -14,25 +14,31 @@ jobs:
       # Checkout the repository
       - uses: actions/checkout@v3
 
-      # Fetch the latest blog posts using the RSS feed
-      - uses: gautamkrishnar/blog-post-workflow@v1
-        with:
-          feed_list: "https://tanmaybansal.hashnode.dev/rss.xml"
-      
-      # Update the README file with the latest blog posts
-      - name: Update Latest Blog Posts Section
+      # Fetch the latest blog posts from Hashnode RSS feed
+      - name: Fetch Latest Blog Posts
         run: |
-          # Fetch the latest blog posts from the RSS feed
-          latest_blog_posts=$(curl -s "https://tanmaybansal.hashnode.dev/rss.xml" | xmllint --xpath '//item/title/text()' - | sed 's/\r//g' | head -n 5)
+          # Get the latest blog post titles and URLs from the RSS feed
+          blog_posts=$(curl -s "https://tanmaybansal.hashnode.dev/rss.xml" \
+            | xmllint --xpath '//item/title/text()' - \
+            | sed 's/\r//g' | head -n 5)
 
-          # Replace the "Latest Blogs" section in the README with the updated posts
-          sed -i "/# Latest Blog Posts/ {r /dev/stdin" -e 'd;}' README.md <<< "$latest_blog_posts"
+          # Format blog post list in Markdown
+          formatted_blog_posts=""
+
+          # Loop through the blog posts and format them
+          for post in $(echo "$blog_posts" | nl -v 0 | awk '{print $2}'); do
+            formatted_blog_posts="${formatted_blog_posts}* [${post}](https://tanmaybansal.hashnode.dev/${post})\n"
+          done
+
+          # Replace the placeholder in README with the latest blog posts
+          sed -i '/<!-- BLOG-POST-LIST:START -->/,/<!-- BLOG-POST-LIST:END -->/c\<!-- BLOG-POST-LIST:START -->\n'\
+          "${formatted_blog_posts}"'<!-- BLOG-POST-LIST:END -->' README.md
 
       # Commit and push changes to the repository
       - name: Commit and Push Changes
         run: |
-          git config --global user.name "TanmayBansa1"
-          git config --global user.email "tanmaybansal_se22a13_09@dtu.ac.in"
+          git config --global user.name "Your Name"
+          git config --global user.email "your.email@example.com"
           git add README.md
           git commit -m "Update latest blog posts"
           git push
