@@ -2,15 +2,37 @@ name: Latest blog posts from Hashnode
 
 on:
   schedule:
-    - cron: '0 * * * *' # every hour
+    - cron: '0 * * * *'  # every hour
   workflow_dispatch:
 
 jobs:
   update-readme:
     name: Update README with latest blog posts
     runs-on: ubuntu-latest
+
     steps:
+      # Checkout the repository
       - uses: actions/checkout@v3
+
+      # Fetch the latest blog posts using the RSS feed
       - uses: gautamkrishnar/blog-post-workflow@v1
         with:
           feed_list: "https://tanmaybansal.hashnode.dev/rss.xml"
+      
+      # Update the README file with the latest blog posts
+      - name: Update Latest Blog Posts Section
+        run: |
+          # Fetch the latest blog posts from the RSS feed
+          latest_blog_posts=$(curl -s "https://tanmaybansal.hashnode.dev/rss.xml" | xmllint --xpath '//item/title/text()' - | sed 's/\r//g' | head -n 5)
+
+          # Replace the "Latest Blogs" section in the README with the updated posts
+          sed -i "/# Latest Blog Posts/ {r /dev/stdin" -e 'd;}' README.md <<< "$latest_blog_posts"
+
+      # Commit and push changes to the repository
+      - name: Commit and Push Changes
+        run: |
+          git config --global user.name "TanmayBansa1"
+          git config --global user.email "tanmaybansal_se22a13_09@dtu.ac.in"
+          git add README.md
+          git commit -m "Update latest blog posts"
+          git push
