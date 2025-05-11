@@ -21,7 +21,7 @@
 </details>
 
 
-## 📝 Latest from My Blog
+# Latest from My Blog
 
 <!-- BLOG-POST-LIST:START -->
 <!-- BLOG-POST-LIST:END -->
