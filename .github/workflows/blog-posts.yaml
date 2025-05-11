@@ -11,34 +11,28 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout the repository
       - uses: actions/checkout@v3
 
-      # Fetch the latest blog posts from Hashnode RSS feed
-      - name: Fetch Latest Blog Posts
+      - name: Fetch and Format Latest Blog Posts
         run: |
-          # Get the latest blog post titles and URLs from the RSS feed
-          blog_posts=$(curl -s "https://tanmaybansal.hashnode.dev/rss.xml" \
-            | xmllint --xpath '//item/title/text()' - \
-            | sed 's/\r//g' | head -n 5)
+          echo "Fetching blog posts..."
+          
+          # Get the latest 5 titles and links
+          blog_posts=$(curl -s https://tanmaybansal.hashnode.dev/rss.xml | \
+            xmllint --xpath "//item[position()<=5]/title/text() | //item[position()<=5]/link/text()" - | \
+            paste - - | awk '{print "- [" $1 "](" $2 ")"}')
 
-          # Format blog post list in Markdown
-          formatted_blog_posts=""
+          echo -e "Latest posts:\n$blog_posts"
 
-          # Loop through the blog posts and format them
-          for post in $(echo "$blog_posts" | nl -v 0 | awk '{print $2}'); do
-            formatted_blog_posts="${formatted_blog_posts}* [${post}](https://tanmaybansal.hashnode.dev/${post})\n"
-          done
+          # Escape slashes for sed
+          blog_posts_escaped=$(echo "$blog_posts" | sed 's_/_\\/_g')
 
-          # Replace the placeholder in README with the latest blog posts
-          sed -i '/<!-- BLOG-POST-LIST:START -->/,/<!-- BLOG-POST-LIST:END -->/c\<!-- BLOG-POST-LIST:START -->\n'\
-          "${formatted_blog_posts}"'<!-- BLOG-POST-LIST:END -->' README.md
+          # Update README.md in place
+          sed -i "/<!-- BLOG-POST-LIST:START -->/,/<!-- BLOG-POST-LIST:END -->/c\\
+<!-- BLOG-POST-LIST:START -->\n$blog_posts_escaped\n<!-- BLOG-POST-LIST:END -->" README.md
 
-      # Commit and push changes to the repository
       - name: Commit and Push Changes
         run: |
           git config --global user.name "TanmayBansa1"
           git config --global user.email "tanmaybansal_se22a13_09@dtu.ac.in"
-          git add README.md
-          git commit -m "Update latest blog posts"
-          git push
+          git diff --quiet || (git add README.md && git commit -m "Update latest blog posts" && git push)
