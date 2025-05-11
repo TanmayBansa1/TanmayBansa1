@@ -33,7 +33,7 @@ jobs:
 
       - name: Commit and Push Changes
         env:
-          TOKEN: ${{secrets.PAT}}
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config --global user.name "Tanmay Bansal"
           git config --global user.email "tanmaybansal_se22a13_09@dtu.ac.in"
