@@ -21,6 +21,8 @@ jobs:
           node-version: '16'
       
       - name: Create blog posts file
+        env:
+          HASHNODE_PAT: ${{ secrets.PAT }}
         run: |
           echo "Fetching blog posts using Hashnode GraphQL API..."
           
@@ -31,7 +33,7 @@ jobs:
           
           const query = `
             {
-              publication(id: "{{ secrets.PAT }}") {
+              publication(id: "${process.env.HASHNODE_PAT}") {
                 id
                 posts(first: 5) {
                   edges {
