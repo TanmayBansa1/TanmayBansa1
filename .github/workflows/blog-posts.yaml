@@ -144,13 +144,21 @@ jobs:
 
           # Run the Node.js script
           node fetch-posts.js
-      - name: Update README
-        if: success()
+      - name: Check if blog-posts.txt exists
+        id: check_blog
+        run: |
+              if [ -f "blog-posts.txt" ]; then
+                echo "exists=true" >> $GITHUB_OUTPUT
+              else
+                echo "exists=false" >> $GITHUB_OUTPUT
+              fi
+
+      - name: Create update-readme.js
+        if: steps.check_blog.outputs.exists == 'true'  
         run: |
           # Create a Node.js script to update the README
           cat > update-readme.js << 'EOFSCRIPT'
           const fs = require('fs');
-          if [ -f "blog-posts.txt" ]; then
 
           // Read the blog posts
           let blogPosts = fs.readFileSync('blog-posts.txt', 'utf8');
