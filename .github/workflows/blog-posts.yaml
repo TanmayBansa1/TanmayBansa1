@@ -31,7 +31,7 @@ jobs:
           
           const query = `
             {
-              publication(id: secrets.PAT) {
+              publication(id: "{{ secrets.PAT }}") {
                 id
                 posts(first: 5) {
                   edges {
@@ -105,11 +105,7 @@ jobs:
               });
               
               const requestBody = {
-                query: query,
-                variables: {
-                  id: "YOUR_PUBLICATION_ID",
-                  first: 5
-                }
+                query: query
               };
               
               req.write(JSON.stringify(requestBody));
