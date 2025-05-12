@@ -14,18 +14,70 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+      
+      - name: Install required dependencies
+        run: sudo apt-get update && sudo apt-get install -y libxml2-utils jq
 
       - name: Fetch and Format Latest Blog Posts
         run: |
           echo "Fetching blog posts..."
           
-          # Get the latest 5 titles and links
+          # Try multiple potential Hashnode RSS feed URL formats
+          
+          # Format 1: username.hashnode.dev/rss.xml
+          echo "Trying format 1: username.hashnode.dev/rss.xml"
           blog_posts=$(curl -s https://tanmaybansal.hashnode.dev/rss.xml | \
-            xmllint --xpath "//item[position()<=5]/title/text() | //item[position()<=5]/link/text()" - | \
+            xmllint --xpath "//item[position()<=5]/title/text() | //item[position()<=5]/link/text()" - 2>/dev/null | \
             paste - - | awk '{print "- [" $1 "](" $2 ")"}')
-
+          
+          # If format 1 fails, try format 2: hashnode.com/@username/rss.xml
+          if [ -z "$blog_posts" ]; then
+            echo "Format 1 failed. Trying format 2: hashnode.com/@username/rss.xml"
+            blog_posts=$(curl -s https://hashnode.com/@TanmayBansal/rss.xml | \
+              xmllint --xpath "//item[position()<=5]/title/text() | //item[position()<=5]/link/text()" - 2>/dev/null | \
+              paste - - | awk '{print "- [" $1 "](" $2 ")"}')
+          fi
+          
+          # If format 2 fails, try format 3: username.hashnode.blog/rss.xml
+          if [ -z "$blog_posts" ]; then
+            echo "Format 2 failed. Trying format 3: username.hashnode.blog/rss.xml"
+            blog_posts=$(curl -s https://tanmaybansal.hashnode.blog/rss.xml | \
+              xmllint --xpath "//item[position()<=5]/title/text() | //item[position()<=5]/link/text()" - 2>/dev/null | \
+              paste - - | awk '{print "- [" $1 "](" $2 ")"}')
+          fi
+          
+          # If format 3 fails, try format 4: hashnode API
+          if [ -z "$blog_posts" ]; then
+            echo "Format 3 failed. Trying format 4: Use a GraphQL query"
+            query='{user(username:"TanmayBansal"){publication{posts{title,brief,slug,url}}}}'
+            response=$(curl -s -X POST -H "Content-Type: application/json" \
+              --data "{\"query\":\"$query\"}" https://api.hashnode.com)
+            
+            # Extract post data if available using jq
+            if echo "$response" | jq -e '.data.user.publication.posts' > /dev/null; then
+              echo "Successfully fetched posts via GraphQL API"
+              blog_posts=$(echo "$response" | \
+                jq -r '.data.user.publication.posts | map("- [" + .title + "](" + .url + ")") | .[]' 2>/dev/null)
+              
+              # If jq extract fails or posts array is empty
+              if [ -z "$blog_posts" ]; then
+                # Try extracting with a different structure
+                blog_posts=$(echo "$response" | \
+                  jq -r '.data.user.publication.posts | map("- [" + .title + "](https://tanmaybansal.hashnode.dev/" + .slug + ")") | .[]' 2>/dev/null)
+              fi
+            else
+              echo "Failed to extract posts from API response: $response" 
+            fi
+            
+            # If no successful formats, add a placeholder
+            if [ -z "$blog_posts" ]; then
+              echo "All formats failed. Adding placeholder message."
+              blog_posts="- No blog posts found. Check back later!"
+            fi
+          fi
+          
           echo -e "Latest posts:\n$blog_posts"
-
+          
           # Escape slashes for sed
           blog_posts_escaped=$(echo "$blog_posts" | sed 's_/_\\/_g')
 
