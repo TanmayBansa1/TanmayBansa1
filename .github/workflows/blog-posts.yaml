@@ -22,64 +22,72 @@ jobs:
         run: |
           echo "Fetching blog posts..."
           
-          # Try multiple potential Hashnode RSS feed URL formats
+          # Get the RSS feed
+          echo "Fetching from https://tanmaybansal.hashnode.dev/rss.xml"
+          curl -s https://tanmaybansal.hashnode.dev/rss.xml > feed.xml
           
-          # Format 1: username.hashnode.dev/rss.xml
-          echo "Trying format 1: username.hashnode.dev/rss.xml"
-          blog_posts=$(curl -s https://tanmaybansal.hashnode.dev/rss.xml | \
-            xmllint --xpath "//item[position()<=5]/title/text() | //item[position()<=5]/link/text()" - 2>/dev/null | \
-            paste - - | awk '{print "- [" $1 "](" $2 ")"}')
+          # Process each item using more robust parsing
+          echo "Processing RSS feed..."
           
-          # If format 1 fails, try format 2: hashnode.com/@username/rss.xml
+          # Extract titles and links
+          titles=$(xmllint --xpath "//item/title" feed.xml | sed -e 's/<title>//g' -e 's/<\/title>//g' -e 's/\!\[CDATA\[//g' -e 's/\]\]>//g')
+          links=$(xmllint --xpath "//item/link/text()" feed.xml)
+          
+          # Create blog posts array (up to 5 posts)
+          echo "Creating blog posts list..."
+          blog_posts=""
+          count=0
+          while IFS= read -r title && IFS= read -r link <&3 && [ $count -lt 5 ]; do
+            # Clean the title by removing CDATA wrapper
+            clean_title=$(echo "$title" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+            clean_title=${clean_title// /\\ }  # Escape spaces for markdown
+            
+            # Clean the link
+            clean_link=$(echo "$link" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+            
+            # Add to blog posts
+            blog_posts="${blog_posts}- [${clean_title}](${clean_link})\n"
+            count=$((count+1))
+          done <<< "$titles" 3<<< "$links"
+          
+          # If no posts were found, try a different approach with grep
           if [ -z "$blog_posts" ]; then
-            echo "Format 1 failed. Trying format 2: hashnode.com/@username/rss.xml"
-            blog_posts=$(curl -s https://hashnode.com/@TanmayBansal/rss.xml | \
-              xmllint --xpath "//item[position()<=5]/title/text() | //item[position()<=5]/link/text()" - 2>/dev/null | \
-              paste - - | awk '{print "- [" $1 "](" $2 ")"}')
+            echo "First approach failed. Trying with grep..."
+            
+            # Extract post information with grep
+            items=$(grep -A 5 "<item>" feed.xml)
+            titles=$(echo "$items" | grep -o "<title>.*</title>" | sed -e 's/<title><!\[CDATA\[ //' -e 's/ \]\]><\/title>//')
+            links=$(echo "$items" | grep -o "<link>.*</link>" | sed -e 's/<link>//' -e 's/<\/link>//')
+            
+            # Build blog posts list from grep results
+            blog_posts=""
+            count=0
+            while IFS= read -r title && IFS= read -r link <&3 && [ $count -lt 5 ]; do
+              blog_posts="${blog_posts}- [${title}](${link})\n"
+              count=$((count+1))
+            done <<< "$titles" 3<<< "$links"
           fi
           
-          # If format 2 fails, try format 3: username.hashnode.blog/rss.xml
+          # Final fallback if all parsing attempts fail
           if [ -z "$blog_posts" ]; then
-            echo "Format 2 failed. Trying format 3: username.hashnode.blog/rss.xml"
-            blog_posts=$(curl -s https://tanmaybansal.hashnode.blog/rss.xml | \
-              xmllint --xpath "//item[position()<=5]/title/text() | //item[position()<=5]/link/text()" - 2>/dev/null | \
-              paste - - | awk '{print "- [" $1 "](" $2 ")"}')
+            echo "Extracting with a more direct approach..."
+            # Extract first 5 titles and links directly
+            blog_posts=$(xmllint --html --xpath "//item[position()<=5]" feed.xml 2>/dev/null | \
+              grep -o -e "<title>.*</title>" -e "<link>.*</link>" | \
+              sed -e 's/<title><!\[CDATA\[ //' -e 's/ \]\]><\/title>//' -e 's/<link>//' -e 's/<\/link>//' | \
+              awk 'NR%2{title=$0;next}{print "- [" title "](" $0 ")"}')
           fi
           
-          # If format 3 fails, try format 4: hashnode API
+          # If still no posts, add placeholder
           if [ -z "$blog_posts" ]; then
-            echo "Format 3 failed. Trying format 4: Use a GraphQL query"
-            query='{user(username:"TanmayBansal"){publication{posts{title,brief,slug,url}}}}'
-            response=$(curl -s -X POST -H "Content-Type: application/json" \
-              --data "{\"query\":\"$query\"}" https://api.hashnode.com)
-            
-            # Extract post data if available using jq
-            if echo "$response" | jq -e '.data.user.publication.posts' > /dev/null; then
-              echo "Successfully fetched posts via GraphQL API"
-              blog_posts=$(echo "$response" | \
-                jq -r '.data.user.publication.posts | map("- [" + .title + "](" + .url + ")") | .[]' 2>/dev/null)
-              
-              # If jq extract fails or posts array is empty
-              if [ -z "$blog_posts" ]; then
-                # Try extracting with a different structure
-                blog_posts=$(echo "$response" | \
-                  jq -r '.data.user.publication.posts | map("- [" + .title + "](https://tanmaybansal.hashnode.dev/" + .slug + ")") | .[]' 2>/dev/null)
-              fi
-            else
-              echo "Failed to extract posts from API response: $response" 
-            fi
-            
-            # If no successful formats, add a placeholder
-            if [ -z "$blog_posts" ]; then
-              echo "All formats failed. Adding placeholder message."
-              blog_posts="- No blog posts found. Check back later!"
-            fi
+            echo "No blog posts found, adding placeholder"
+            blog_posts="- No blog posts found. Check back later!"
           fi
           
           echo -e "Latest posts:\n$blog_posts"
           
           # Escape slashes for sed
-          blog_posts_escaped=$(echo "$blog_posts" | sed 's_/_\\/_g')
+          blog_posts_escaped=$(echo -e "$blog_posts" | sed 's_/_\\/_g')
 
           # Update README.md in place
           sed -i "/<!-- BLOG-POST-LIST:START -->/,/<!-- BLOG-POST-LIST:END -->/c\\
