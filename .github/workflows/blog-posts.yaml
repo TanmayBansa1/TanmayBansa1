@@ -30,14 +30,20 @@ jobs:
           const fs = require('fs');
           
           const query = `
-            query {
-              user(username: "tanmaybansal") {
-                publication {
-                  posts(page: 0) {
-                    title
-                    slug
-                    brief
-                    dateAdded
+            {
+              publication(id: secrets.PAT) {
+                id
+                posts(first: 5) {
+                  edges {
+                    node {
+                      id
+                      title
+                      brief
+                      publishedAt
+                      coverImage {
+                        url
+                      }
+                    }
                   }
                 }
               }
@@ -98,7 +104,15 @@ jobs:
                 }
               });
               
-              req.write(JSON.stringify({ query }));
+              const requestBody = {
+                query: query,
+                variables: {
+                  id: "YOUR_PUBLICATION_ID",
+                  first: 5
+                }
+              };
+              
+              req.write(JSON.stringify(requestBody));
               req.end();
             });
           }
@@ -109,12 +123,12 @@ jobs:
               const response = await fetchWithRetry();
               const data = JSON.parse(response);
               
-              if (!data.data?.user?.publication?.posts) {
+              if (!data.data?.publication?.posts?.edges) {
                 console.log('No posts found in the response.');
                 return;
               }
               
-              const posts = data.data.user.publication.posts.slice(0, 5);
+              const posts = data.data.publication.posts.edges.map(edge => edge.node);
               console.log(`Found ${posts.length} posts.`);
               
               // Format posts for README
