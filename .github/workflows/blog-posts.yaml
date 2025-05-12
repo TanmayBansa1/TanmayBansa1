@@ -154,7 +154,7 @@ jobs:
               fi
 
       - name: Create update-readme.js
-        if: steps.check_blog.outputs.exists == 'true'  
+        if: steps.check_blog.outputs.exists == 'true'
         run: |
           # Create a Node.js script to update the README
           cat > update-readme.js << 'EOFSCRIPT'
@@ -214,8 +214,4 @@ jobs:
             git add README.md
             git commit -m "Update latest blog posts"
             git push
-          fi
-          else
-            echo "Blog posts file not found. Something went wrong."
-            exit 1
           fi
