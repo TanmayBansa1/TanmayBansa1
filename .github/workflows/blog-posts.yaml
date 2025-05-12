@@ -14,12 +14,161 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      
-      - name: Fetch blog posts
-        uses: gautamkrishnar/blog-post-workflow@v1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
-          feed_list: "https://tanmaybansal.hashnode.dev/rss.xml"
-          max_post_count: 5
-          comment_tag_name: "BLOG-POST-LIST"
-          commit_message: "Update latest blog posts"
-          user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36"
+          node-version: '16'
+      
+      - name: Create blog posts file
+        run: |
+          echo "Fetching blog posts with browser-like headers..."
+          
+          # Create a file with browser-like headers to avoid rate limiting
+          cat > fetch-rss.js << 'EOL'
+          const https = require('https');
+          const fs = require('fs');
+          
+          const options = {
+            headers: {
+              'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36',
+              'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+              'Accept-Language': 'en-US,en;q=0.5',
+              'Cache-Control': 'no-cache',
+              'Pragma': 'no-cache',
+              'DNT': '1',
+              'Connection': 'keep-alive',
+              'Upgrade-Insecure-Requests': '1',
+              'Sec-Fetch-Dest': 'document',
+              'Sec-Fetch-Mode': 'navigate',
+              'Sec-Fetch-Site': 'none',
+              'Sec-Fetch-User': '?1'
+            },
+            timeout: 10000
+          };
+          
+          // Function to try fetching with retries
+          function fetchWithRetry(url, retries = 3, delay = 3000) {
+            return new Promise((resolve, reject) => {
+              console.log(`Attempt to fetch ${url}, retries left: ${retries}`);
+              
+              const req = https.get(url, options, (res) => {
+                console.log(`Status code: ${res.statusCode}`);
+                
+                if (res.statusCode === 429 && retries > 0) {
+                  console.log(`Rate limited. Retrying after ${delay}ms...`);
+                  setTimeout(() => {
+                    fetchWithRetry(url, retries - 1, delay * 1.5)
+                      .then(resolve)
+                      .catch(reject);
+                  }, delay);
+                  return;
+                }
+                
+                if (res.statusCode !== 200) {
+                  return reject(new Error(`Status code: ${res.statusCode}`));
+                }
+                
+                const chunks = [];
+                res.on('data', chunk => chunks.push(chunk));
+                res.on('end', () => {
+                  const data = Buffer.concat(chunks).toString('utf-8');
+                  resolve(data);
+                });
+              });
+              
+              req.on('error', err => {
+                console.error(`Error fetching: ${err.message}`);
+                if (retries > 0) {
+                  console.log(`Retrying after ${delay}ms...`);
+                  setTimeout(() => {
+                    fetchWithRetry(url, retries - 1, delay * 1.5)
+                      .then(resolve)
+                      .catch(reject);
+                  }, delay);
+                } else {
+                  reject(err);
+                }
+              });
+            });
+          }
+          
+          // Parse the XML to extract blog posts
+          function extractBlogPosts(xmlData) {
+            const posts = [];
+            const regex = /<item>[\s\S]*?<title>\s*<!\[CDATA\[\s*(.*?)\s*\]\]>\s*<\/title>[\s\S]*?<link>\s*(.*?)\s*<\/link>/g;
+            
+            let match;
+            while ((match = regex.exec(xmlData)) !== null && posts.length < 5) {
+              posts.push({
+                title: match[1],
+                link: match[2]
+              });
+            }
+            
+            return posts;
+          }
+          
+          async function main() {
+            try {
+              console.log('Fetching RSS feed...');
+              const xmlData = await fetchWithRetry('https://tanmaybansal.hashnode.dev/rss.xml');
+              
+              console.log('Extracting blog posts...');
+              const posts = extractBlogPosts(xmlData);
+              
+              if (posts.length === 0) {
+                console.log('No posts found in the RSS feed.');
+                return;
+              }
+              
+              console.log(`Found ${posts.length} posts.`);
+              
+              // Format posts for README
+              const formattedPosts = posts.map(post => `- [${post.title}](${post.link})`).join('\n');
+              
+              // Write to a file
+              fs.writeFileSync('blog-posts.txt', formattedPosts);
+              console.log('Blog posts written to blog-posts.txt');
+            } catch (error) {
+              console.error('Error:', error.message);
+              process.exit(1);
+            }
+          }
+          
+          main();
+          EOL
+          
+          # Run the Node.js script
+          node fetch-rss.js
+      
+      - name: Update README
+        if: success()
+        run: |
+          if [ -f "blog-posts.txt" ]; then
+            # Read the blog posts
+            BLOG_POSTS=$(cat blog-posts.txt)
+            
+            # If no blog posts were found, add a placeholder
+            if [ -z "$BLOG_POSTS" ]; then
+              BLOG_POSTS="- No blog posts found. Check back later!"
+            fi
+            
+            # Update README using sed
+            sed -i "/<!-- BLOG-POST-LIST:START -->/,/<!-- BLOG-POST-LIST:END -->/c\\
+            <!-- BLOG-POST-LIST:START -->\n$BLOG_POSTS\n<!-- BLOG-POST-LIST:END -->" README.md
+            
+            # Check if there are changes
+            if git diff --quiet README.md; then
+              echo "No changes to README.md, skipping commit"
+            else
+              git config --global user.name "github-actions[bot]"
+              git config --global user.email "github-actions[bot]@users.noreply.github.com"
+              git add README.md
+              git commit -m "Update latest blog posts"
+              git push
+            fi
+          else
+            echo "Blog posts file not found. Something went wrong."
+            exit 1
+          fi
