@@ -1,5 +1,5 @@
 name: Latest blog posts from Hashnode
-'on':
+"on":
   schedule:
     - cron: 0 * * * *
   workflow_dispatch: null
@@ -14,10 +14,10 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16'
+          node-version: "16"
       - name: Create blog posts file
         env:
-          HASHNODE_PAT: '${{ secrets.PAT }}'
+          HASHNODE_PAT: "${{ secrets.PAT }}"
         run: |
           echo "Fetching blog posts using Hashnode GraphQL API..."
 
@@ -147,66 +147,66 @@ jobs:
       - name: Update README
         if: success()
         run: |
+          # Create a Node.js script to update the README
+          cat > update-readme.js << 'EOFSCRIPT'
+          const fs = require('fs');
           if [ -f "blog-posts.txt" ]; then
-            # Create a Node.js script to update the README
-            cat > update-readme.js << 'EOFSCRIPT'
-            const fs = require('fs');
 
-            // Read the blog posts
-            let blogPosts = fs.readFileSync('blog-posts.txt', 'utf8');
-            
-            // If no blog posts were found, add a placeholder
-            if (!blogPosts.trim()) {
-              blogPosts = '- No blog posts found. Check back later!';
-            }
-            
-            // Read the README
-            const readme = fs.readFileSync('README.md', 'utf8');
-            
-            // Define the markers
-            const startMarker = '<!-- BLOG-POST-LIST:START -->';
-            const endMarker = '<!-- BLOG-POST-LIST:END -->';
-            
-            // Find the start and end positions
-            const startPos = readme.indexOf(startMarker);
-            const endPos = readme.indexOf(endMarker, startPos);
-            
-            if (startPos === -1 || endPos === -1) {
-              console.log('Markers not found in README.md');
-              process.exit(1);
-            }
-            
-            // Construct the new README content
-            const newReadme = 
-              readme.substring(0, startPos) + 
-              startMarker + '\n' + 
-              blogPosts + '\n' + 
-              readme.substring(endPos);
-            
-            // Check if there are any changes
-            if (readme === newReadme) {
-              console.log('No changes needed to README.md');
-              process.exit(0);
-            }
-            
-            // Write the updated README
-            fs.writeFileSync('README.md', newReadme);
-            console.log('README.md updated successfully');
-            EOFSCRIPT
-            
-            # Run the update script
-            node update-readme.js
-            
-            # Check if there are changes
-            if git diff --quiet README.md; then
-              echo "No changes to README.md, skipping commit"
-            else
-              git config --global user.name "github-actions[bot]"
-              git config --global user.email "github-actions[bot]@users.noreply.github.com"
-              git add README.md
-              git commit -m "Update latest blog posts"
-              git push
-            fi
+          // Read the blog posts
+          let blogPosts = fs.readFileSync('blog-posts.txt', 'utf8');
+
+          // If no blog posts were found, add a placeholder
+          if (!blogPosts.trim()) {
+            blogPosts = '- No blog posts found. Check back later!';
+          }
+
+          // Read the README
+          const readme = fs.readFileSync('README.md', 'utf8');
+
+          // Define the markers
+          const startMarker = '<!-- BLOG-POST-LIST:START -->';
+          const endMarker = '<!-- BLOG-POST-LIST:END -->';
+
+          // Find the start and end positions
+          const startPos = readme.indexOf(startMarker);
+          const endPos = readme.indexOf(endMarker, startPos);
+
+          if (startPos === -1 || endPos === -1) {
+            console.log('Markers not found in README.md');
+            process.exit(1);
+          }
+
+          // Construct the new README content
+          const newReadme = 
+            readme.substring(0, startPos) + 
+            startMarker + '\n' + 
+            blogPosts + '\n' + 
+            readme.substring(endPos);
+
+          // Check if there are any changes
+          if (readme === newReadme) {
+            console.log('No changes needed to README.md');
+            process.exit(0);
+          }
+
+          // Write the updated README
+          fs.writeFileSync('README.md', newReadme);
+          console.log('README.md updated successfully');
+          EOFSCRIPT
+
+          # Run the update script
+          node update-readme.js
+
+          # Check if there are changes
+          if git diff --quiet README.md; then
+            echo "No changes to README.md, skipping commit"
+          else
+            git config --global user.name "github-actions[bot]"
+            git config --global user.email "github-actions[bot]@users.noreply.github.com"
+            git add README.md
+            git commit -m "Update latest blog posts"
+            git push
+          fi
           else
             echo "Blog posts file not found. Something went wrong."
             exit 1
