@@ -27,7 +27,7 @@ jobs:
           echo "Fetching blog posts using Hashnode GraphQL API..."
           
           # Create a file to fetch posts using GraphQL
-          cat > fetch-posts.js << 'EOL'
+          cat > fetch-posts.js << 'EOFSCRIPT'
           const https = require('https');
           const fs = require('fs');
           
@@ -145,7 +145,7 @@ jobs:
           }
           
           main();
-          EOL
+          EOFSCRIPT
           
           # Run the Node.js script
           node fetch-posts.js
@@ -155,7 +155,7 @@ jobs:
         run: |
           if [ -f "blog-posts.txt" ]; then
             # Create a Node.js script to update the README
-            cat > update-readme.js << 'EOL'
+            cat > update-readme.js << 'EOFSCRIPT'
             const fs = require('fs');
 
             // Read the blog posts
@@ -198,7 +198,7 @@ jobs:
             // Write the updated README
             fs.writeFileSync('README.md', newReadme);
             console.log('README.md updated successfully');
-            EOL
+            EOFSCRIPT
             
             # Run the update script
             node update-readme.js
