@@ -41,6 +41,7 @@ jobs:
                       id
                       title
                       brief
+                      slug
                       publishedAt
                       coverImage {
                         url
@@ -153,16 +154,54 @@ jobs:
         if: success()
         run: |
           if [ -f "blog-posts.txt" ]; then
-            # Read the blog posts
-            BLOG_POSTS=$(cat blog-posts.txt)
+            # Create a Node.js script to update the README
+            cat > update-readme.js << 'EOL'
+            const fs = require('fs');
+
+            // Read the blog posts
+            let blogPosts = fs.readFileSync('blog-posts.txt', 'utf8');
             
-            # If no blog posts were found, add a placeholder
-            if [ -z "$BLOG_POSTS" ]; then
-              BLOG_POSTS="- No blog posts found. Check back later!"
-            fi
+            // If no blog posts were found, add a placeholder
+            if (!blogPosts.trim()) {
+              blogPosts = '- No blog posts found. Check back later!';
+            }
             
-            # Update README using sed
-            sed -i.bak "/<!-- BLOG-POST-LIST:START -->/,/<!-- BLOG-POST-LIST:END -->/c\<!-- BLOG-POST-LIST:START -->\n$BLOG_POSTS\n<!-- BLOG-POST-LIST:END -->" README.md && rm README.md.bak
+            // Read the README
+            const readme = fs.readFileSync('README.md', 'utf8');
+            
+            // Define the markers
+            const startMarker = '<!-- BLOG-POST-LIST:START -->';
+            const endMarker = '<!-- BLOG-POST-LIST:END -->';
+            
+            // Find the start and end positions
+            const startPos = readme.indexOf(startMarker);
+            const endPos = readme.indexOf(endMarker, startPos);
+            
+            if (startPos === -1 || endPos === -1) {
+              console.log('Markers not found in README.md');
+              process.exit(1);
+            }
+            
+            // Construct the new README content
+            const newReadme = 
+              readme.substring(0, startPos) + 
+              startMarker + '\n' + 
+              blogPosts + '\n' + 
+              readme.substring(endPos);
+            
+            // Check if there are any changes
+            if (readme === newReadme) {
+              console.log('No changes needed to README.md');
+              process.exit(0);
+            }
+            
+            // Write the updated README
+            fs.writeFileSync('README.md', newReadme);
+            console.log('README.md updated successfully');
+            EOL
+            
+            # Run the update script
+            node update-readme.js
             
             # Check if there are changes
             if git diff --quiet README.md; then
