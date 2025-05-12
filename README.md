@@ -24,7 +24,7 @@
 # Latest from My Blog
 
 <!-- BLOG-POST-LIST:START -->
-
+- No blog posts found. Check back later!
 <!-- BLOG-POST-LIST:END -->
 
 
