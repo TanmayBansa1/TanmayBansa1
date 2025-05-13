@@ -112,7 +112,7 @@
 
 
   <img src="https://github-readme-stats.vercel.app/api?username=TanmayBansa1&show_icons=true&theme=tokyonight" alt="Tanmay's GitHub Stats" />
-  <a href="https://git.io/streak-stats"><img src="https://streak-stats.demolab.com?user=TanmayBansa1" alt="GitHub Streak" /></a>
+  [![GitHub Streak](https://nirzak-streak-stats.vercel.app?user=TanmayBansa1&theme=merko)](https://git.io/streak-stats)
 
 <summary>🔍 Quote I Live By</summary>
 
