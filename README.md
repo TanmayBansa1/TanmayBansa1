@@ -11,7 +11,7 @@
 <details>
 <summary>🚀 About Me</summary>
 
-- Currently working as SDE Intern at Bachatt
+- Currently working as SDE Intern at [Bachatt](https://bachatt.app)
 - 🌟 B.Tech IT student at Delhi Technological University (DTU).
 - 💡 Passionate about building scalable SaaS products and AI-powered platforms.
 - 📢 Currently heavily contributing to Sugar Labs
