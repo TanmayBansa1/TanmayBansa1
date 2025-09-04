@@ -25,6 +25,7 @@
 # Latest from My Blog
 
 <!-- BLOG-POST-LIST:START -->
+- [I Built a Convolutional Neural Network that understands Audio](https://tanmaybansal.hashnode.dev/sunoai)
 - [Scaling your Apps: The Why, How, and When](https://tanmaybansal.hashnode.dev/scaling)
 - [Node.js Runtime: How It Works and How It's Different From Bun](https://tanmaybansal.hashnode.dev/nodejs-runtime-how-it-works-and-how-its-different-from-bun)
 - [Introduction to HTTP: Understanding the Web's Backbone](https://tanmaybansal.hashnode.dev/introduction-to-http-understanding-the-webs-backbone)
