@@ -11,6 +11,7 @@
 <details>
 <summary>🚀 About Me</summary>
 
+- Ex SDE Intern at [Bachatt](https://bachatt.app)
 - 🌟 B.Tech IT student at Delhi Technological University (DTU).
 - 💡 Passionate about building scalable SaaS products and AI-powered platforms.
 - 📢 Currently heavily contributing to Sugar Labs
@@ -24,6 +25,8 @@
 # Latest from My Blog
 
 <!-- BLOG-POST-LIST:START -->
+- [I Built a Convolutional Neural Network that understands Audio](https://tanmaybansal.hashnode.dev/sunoai)
+- [Scaling your Apps: The Why, How, and When](https://tanmaybansal.hashnode.dev/scaling)
 - [Node.js Runtime: How It Works and How It's Different From Bun](https://tanmaybansal.hashnode.dev/nodejs-runtime-how-it-works-and-how-its-different-from-bun)
 - [Introduction to HTTP: Understanding the Web's Backbone](https://tanmaybansal.hashnode.dev/introduction-to-http-understanding-the-webs-backbone)
 <!-- BLOG-POST-LIST:END -->
@@ -110,9 +113,9 @@
 
 </details>
 
-
-  <img src="https://github-readme-stats.vercel.app/api?username=TanmayBansa1&show_icons=true&theme=tokyonight" alt="Tanmay's GitHub Stats" />
-  <img src="https://github-readme-streak-stats.herokuapp.com/?user=TanmayBansa1&theme=tokyonight" alt="Tanmay's GitHub Streak" />
+  
+<!--   <img src="https://github-readme-stats.vercel.app/api?username=TanmayBansa1&theme=merko&show_icons=true&hide_border=true&count_private=true" alt="Tanmay's GitHub Stats" /> -->
+  <img src="https://nirzak-streak-stats.vercel.app?user=TanmayBansa1&theme=merko" alt="Tanmay's GitHub Streak" />
 
 <summary>🔍 Quote I Live By</summary>
 
