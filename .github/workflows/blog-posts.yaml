@@ -1,4 +1,4 @@
-name: Latest blog posts from Hashnode
+name: Latest blog posts from Medium
 "on":
   schedule:
     - cron: 0 * * * *
@@ -17,121 +17,87 @@ jobs:
           node-version: "16"
       - name: Create blog posts file
         env:
-          HASHNODE_PAT: "${{ secrets.PAT }}"
+          RAPIDAPI_KEY: "${{ secrets.RAPIDAPI_KEY }}"
+          MEDIUM_USER_ID: "${{ secrets.MEDIUM_USER_ID }} || cb42ec9bafd3"
         run: |
-          echo "Fetching blog posts using Hashnode GraphQL API..."
+          echo "Fetching blog posts using Medium2 RapidAPI..."
 
-          # Create a file to fetch posts using GraphQL
+          # Create a Node.js script to fetch Medium articles
           cat > fetch-posts.js << 'EOFSCRIPT'
           const https = require('https');
           const fs = require('fs');
 
-          const query = `
-            {
-              publication(id: "${process.env.HASHNODE_PAT}") {
-                id
-                posts(first: 5) {
-                  edges {
-                    node {
-                      id
-                      title
-                      brief
-                      slug
-                      publishedAt
-                      coverImage {
-                        url
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          `;
+          const RAPIDAPI_KEY = process.env.RAPIDAPI_KEY;
+          const MEDIUM_USER_ID = process.env.MEDIUM_USER_ID;
 
-          const options = {
-            hostname: 'gql.hashnode.com',
-            path: '/',
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json',
-            }
-          };
+          if (!RAPIDAPI_KEY || !MEDIUM_USER_ID) {
+            console.error('Missing RAPIDAPI_KEY or MEDIUM_USER_ID env vars');
+            process.exit(1);
+          }
 
-          // Function to try fetching with retries
-          function fetchWithRetry(data, retries = 3, delay = 3000) {
+          function request(path) {
             return new Promise((resolve, reject) => {
-              console.log(`Attempt to fetch posts, retries left: ${retries}`);
-              
+              const options = {
+                hostname: 'medium2.p.rapidapi.com',
+                path,
+                method: 'GET',
+                headers: {
+                  'x-rapidapi-key': RAPIDAPI_KEY,
+                  'x-rapidapi-host': 'medium2.p.rapidapi.com'
+                }
+              };
+
               const req = https.request(options, (res) => {
-                console.log(`Status code: ${res.statusCode}`);
-                
-                if (res.statusCode === 429 && retries > 0) {
-                  console.log(`Rate limited. Retrying after ${delay}ms...`);
-                  setTimeout(() => {
-                    fetchWithRetry(data, retries - 1, delay * 1.5)
-                      .then(resolve)
-                      .catch(reject);
-                  }, delay);
-                  return;
-                }
-                
-                if (res.statusCode !== 200) {
-                  return reject(new Error(`Status code: ${res.statusCode}`));
-                }
-                
                 const chunks = [];
-                res.on('data', chunk => chunks.push(chunk));
+                res.on('data', (c) => chunks.push(c));
                 res.on('end', () => {
-                  const responseData = Buffer.concat(chunks).toString('utf-8');
-                  resolve(responseData);
+                  if (res.statusCode !== 200) {
+                    return reject(new Error(`HTTP ${res.statusCode}: ${Buffer.concat(chunks).toString('utf-8')}`));
+                  }
+                  resolve(JSON.parse(Buffer.concat(chunks).toString('utf-8')));
                 });
               });
-              
-              req.on('error', err => {
-                console.error(`Error fetching: ${err.message}`);
-                if (retries > 0) {
-                  console.log(`Retrying after ${delay}ms...`);
-                  setTimeout(() => {
-                    fetchWithRetry(data, retries - 1, delay * 1.5)
-                      .then(resolve)
-                      .catch(reject);
-                  }, delay);
-                } else {
-                  reject(err);
-                }
-              });
-              
-              const requestBody = {
-                query: query
-              };
-              
-              req.write(JSON.stringify(requestBody));
+
+              req.on('error', reject);
               req.end();
             });
           }
 
           async function main() {
             try {
-              console.log('Fetching posts from Hashnode...');
-              const response = await fetchWithRetry();
-              const data = JSON.parse(response);
-              
-              if (!data.data?.publication?.posts?.edges) {
-                console.log('No posts found in the response.');
+              // 1) Get top articles by user -> article IDs
+              const topArticles = await request(`/user/${MEDIUM_USER_ID}/top_articles`);
+              const ids = (topArticles?.top_articles)
+                .map((it) => it?.id || it)
+                .filter(Boolean);
+
+              if (ids.length === 0) {
+                console.log('No top articles found');
+                fs.writeFileSync('blog-posts.txt', '- No blog posts found. Check back later!');
                 return;
               }
-              
-              const posts = data.data.publication.posts.edges.map(edge => edge.node);
-              console.log(`Found ${posts.length} posts.`);
-              
-              // Format posts for README
-              const formattedPosts = posts.map(post => 
-                `- [${post.title}](https://tanmaybansal.hashnode.dev/${post.slug})`
-              ).join('\n');
-              
-              // Write to a file
-              fs.writeFileSync('blog-posts.txt', formattedPosts);
+
+              // 2) For each ID, fetch details
+              const details = [];
+              for (const id of ids) {
+                try {
+                  const article = await request(`/article/${id}`);
+                  details.push(article);
+                } catch (e) {
+                  console.warn(`Failed fetching article ${id}: ${e.message}`);
+                }
+              }
+
+              // 3) Format for README
+              const items = details
+                .map((a) => {
+                  const title = a?.title || a?.data?.title || 'Untitled';
+                  const url = a?.link || a?.url || (a?.data && a.data.link) || `https://medium.com/p/${a?.id || ''}`;
+                  return `- [${title}](${url})`;
+                })
+                .join('\n');
+
+              fs.writeFileSync('blog-posts.txt', items);
               console.log('Blog posts written to blog-posts.txt');
             } catch (error) {
               console.error('Error:', error.message);
