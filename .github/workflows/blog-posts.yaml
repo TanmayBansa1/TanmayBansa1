@@ -18,7 +18,7 @@ jobs:
       - name: Create blog posts file
         env:
           RAPIDAPI_KEY: "${{ secrets.RAPIDAPI_KEY }}"
-          MEDIUM_USER_ID: "${{ secrets.MEDIUM_USER_ID }} || cb42ec9bafd3"
+          MEDIUM_USER_ID: "${{ secrets.MEDIUM_USER_ID }}"
         run: |
           echo "Fetching blog posts using Medium2 RapidAPI..."
 
