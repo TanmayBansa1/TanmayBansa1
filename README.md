@@ -25,7 +25,7 @@
 # Latest from My Blog
 
 <!-- BLOG-POST-LIST:START -->
-- [I Thought I Knew Node.js. Then I Dug Deeper.](https://medium.com/@tanmay.bansal20/i-thought-i-knew-node-js-then-i-dug-deeper-405f4453638e)
+- [I Thought I Knew Node.js. Then I Dug Deeper.](https://javascript.plainenglish.io/i-thought-i-knew-node-js-then-i-dug-deeper-405f4453638e)
 - [Inside the Life of an SQL Query: From Parsing to Execution, and Everything I Learned the Hard Way](https://ai.plainenglish.io/inside-the-life-of-an-sql-query-from-parsing-to-execution-and-everything-i-learned-the-hard-way-cdfc31193b7b)
 - [Mastering CNNs for Audio: The Full Story of How I Built SunoAI](https://ai.plainenglish.io/mastering-cnns-for-audio-the-full-story-of-how-i-built-sunoai-c97617e59a31)
 - [I Built a Convolutional Neural Network that understands Audio](https://medium.com/@tanmay.bansal20/i-built-a-convolutional-neural-network-that-understands-audio-d60a66e9e25e)
