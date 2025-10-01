@@ -91,6 +91,12 @@
 <details>
 <summary>📢 Let's Connect</summary>
  <p align="center">
+  <a href="https://cal.com/tanmay-bansal" target="_blank">
+    <img src="https://cal.com/logo.svg" />
+  </a>
+  <a href="https://medium.com/@tanmay.bansal20" target="_blank">
+    <img src="https://img.shields.io/badge/Medium-2962FF?style=for-the-badge&logo=medium&logoColor=white" />
+  </a>
   <a href="https://tanmay.space" target="_blank">
     <img src="https://img.shields.io/badge/Portfolio-000000?style=for-the-badge&logo=firefox-browser&logoColor=white" />
   </a>
@@ -105,9 +111,6 @@
   </a>
   <a href="https://twitter.com/K_A_I11" target="_blank">
     <img src="https://img.shields.io/badge/X-000000?style=for-the-badge&logo=twitter&logoColor=white" />
-  </a>
-  <a href="https://tanmaybansal.hashnode.dev" target="_blank">
-    <img src="https://img.shields.io/badge/Hashnode-2962FF?style=for-the-badge&logo=hashnode&logoColor=white" />
   </a>
 </p>
 
