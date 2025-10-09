@@ -25,7 +25,7 @@
 # Latest from My Blog
 
 <!-- BLOG-POST-LIST:START -->
-- [The Glass Ceiling of async/await: 3 ways to fix your Nodejs app’s bottlenecks and improve it’s…](https://medium.com/@tanmay.bansal20/the-glass-ceiling-of-async-await-3-ways-to-fix-your-nodejs-apps-bottlenecks-and-improve-it-s-a8b60b3b459d)
+- [The Glass Ceiling of async/await: 3 ways to fix your Nodejs app’s bottlenecks and improve it’s…](https://javascript.plainenglish.io/the-glass-ceiling-of-async-await-3-ways-to-fix-your-nodejs-apps-bottlenecks-and-improve-it-s-a8b60b3b459d)
 - [There’s a Phantom Author in Your Codebase, and It’s a Problem](https://ai.gopubby.com/theres-a-phantom-author-in-your-codebase-and-it-s-a-problem-0c304daf7087)
 - [I Thought I Knew Node.js. Then I Dug Deeper.](https://javascript.plainenglish.io/i-thought-i-knew-node-js-then-i-dug-deeper-405f4453638e)
 - [Inside the Life of an SQL Query: From Parsing to Execution, and Everything I Learned the Hard Way](https://ai.plainenglish.io/inside-the-life-of-an-sql-query-from-parsing-to-execution-and-everything-i-learned-the-hard-way-cdfc31193b7b)
