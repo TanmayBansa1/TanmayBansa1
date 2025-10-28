@@ -34,6 +34,7 @@
 - [Your console.log is useless: A Guide to Production-Grade Observability in Node.js](https://javascript.plainenglish.io/your-console-log-is-useless-a-guide-to-production-grade-observability-in-node-js-3ae067233ef7)
 - [The Glass Ceiling of async/await: 3 ways to fix your Nodejs app’s bottlenecks and improve it’s…](https://javascript.plainenglish.io/the-glass-ceiling-of-async-await-3-ways-to-fix-your-nodejs-apps-bottlenecks-and-improve-it-s-a8b60b3b459d)
 - [Inside the Life of an SQL Query: From Parsing to Execution, and Everything I Learned the Hard Way](https://ai.plainenglish.io/inside-the-life-of-an-sql-query-from-parsing-to-execution-and-everything-i-learned-the-hard-way-cdfc31193b7b)
+- [Mastering CNNs for Audio: The Full Story of How I Built SunoAI](https://ai.plainenglish.io/mastering-cnns-for-audio-the-full-story-of-how-i-built-sunoai-c97617e59a31)
 <!-- BLOG-POST-LIST:END -->
 
 
