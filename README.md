@@ -25,10 +25,16 @@
 # Latest from My Blog
 
 <!-- BLOG-POST-LIST:START -->
-- [I Built a Convolutional Neural Network that understands Audio](https://tanmaybansal.hashnode.dev/sunoai)
-- [Scaling your Apps: The Why, How, and When](https://tanmaybansal.hashnode.dev/scaling)
-- [Node.js Runtime: How It Works and How It's Different From Bun](https://tanmaybansal.hashnode.dev/nodejs-runtime-how-it-works-and-how-its-different-from-bun)
-- [Introduction to HTTP: Understanding the Web's Backbone](https://tanmaybansal.hashnode.dev/introduction-to-http-understanding-the-webs-backbone)
+- [OpenAI Agent Builder or n8n? The “not so” obvious choice.](https://ai.gopubby.com/openai-agent-builder-or-n8n-the-not-so-obvious-choice-4894a1511137)
+- [I Thought I Knew Node.js. Then I Dug Deeper.](https://javascript.plainenglish.io/i-thought-i-knew-node-js-then-i-dug-deeper-405f4453638e)
+- [There’s a Phantom Author in Your Codebase, and It’s a Problem](https://ai.gopubby.com/theres-a-phantom-author-in-your-codebase-and-it-s-a-problem-0c304daf7087)
+- [De-mystifying the V8 Garbage Collector: How Your Code Is Sabotaging Your App’s Memory](https://javascript.plainenglish.io/de-mystifying-the-v8-garbage-collector-how-your-code-is-sabotaging-your-apps-memory-c290f80eb1d0)
+- [OpenAI Atlas: Beyond the Browser Window — Unpacking Agentic Web, AI Memories & The Future of…](https://ai.gopubby.com/openai-atlas-beyond-the-browser-window-unpacking-agentic-web-ai-memories-the-future-of-7a1900fe0999)
+- [“Local-First AI”: The Quiet Revolution Happening on Your Laptop](https://ai.plainenglish.io/local-first-ai-the-quiet-revolution-happening-on-your-laptop-0b490f726175)
+- [Your console.log is useless: A Guide to Production-Grade Observability in Node.js](https://javascript.plainenglish.io/your-console-log-is-useless-a-guide-to-production-grade-observability-in-node-js-3ae067233ef7)
+- [The Glass Ceiling of async/await: 3 ways to fix your Nodejs app’s bottlenecks and improve it’s…](https://javascript.plainenglish.io/the-glass-ceiling-of-async-await-3-ways-to-fix-your-nodejs-apps-bottlenecks-and-improve-it-s-a8b60b3b459d)
+- [Inside the Life of an SQL Query: From Parsing to Execution, and Everything I Learned the Hard Way](https://ai.plainenglish.io/inside-the-life-of-an-sql-query-from-parsing-to-execution-and-everything-i-learned-the-hard-way-cdfc31193b7b)
+- [Mastering CNNs for Audio: The Full Story of How I Built SunoAI](https://ai.plainenglish.io/mastering-cnns-for-audio-the-full-story-of-how-i-built-sunoai-c97617e59a31)
 <!-- BLOG-POST-LIST:END -->
 
 
@@ -91,6 +97,12 @@
 <details>
 <summary>📢 Let's Connect</summary>
  <p align="center">
+  <a href="https://cal.com/tanmay-bansal" target="_blank">
+    <img src="https://cal.com/logo.svg" />
+  </a>
+  <a href="https://medium.com/@tanmay.bansal20" target="_blank">
+    <img src="https://img.shields.io/badge/Medium-2962FF?style=for-the-badge&logo=medium&logoColor=white" />
+  </a>
   <a href="https://tanmay.space" target="_blank">
     <img src="https://img.shields.io/badge/Portfolio-000000?style=for-the-badge&logo=firefox-browser&logoColor=white" />
   </a>
@@ -105,9 +117,6 @@
   </a>
   <a href="https://twitter.com/K_A_I11" target="_blank">
     <img src="https://img.shields.io/badge/X-000000?style=for-the-badge&logo=twitter&logoColor=white" />
-  </a>
-  <a href="https://tanmaybansal.hashnode.dev" target="_blank">
-    <img src="https://img.shields.io/badge/Hashnode-2962FF?style=for-the-badge&logo=hashnode&logoColor=white" />
   </a>
 </p>
 
